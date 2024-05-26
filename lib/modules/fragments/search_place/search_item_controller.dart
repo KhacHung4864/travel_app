@@ -10,20 +10,14 @@ class SearchItemController extends GetxController {
   final HomeApi _homeApi = HomeApi();
   SearchItemController();
 
-  final String searchText = Get.arguments;
   TextEditingController searchController = TextEditingController();
   final RxBool isLoading = false.obs;
   RxList<Places> listPlaceSearch = <Places>[].obs;
-
   @override
   void onInit() {
-    searchController.text = searchText;
-    searchPlaces(keyword: searchController.text, listPlace: listPlaceSearch);
+    searchPlaces(keyword: searchController.text, listPlace: listPlaceSearch, loading: false);
     super.onInit();
   }
-
-  @override
-  void onClose() {}
 
   Future<void> searchPlaces({String? keyword, RxList<Places>? listPlace, bool loading = true}) async {
     try {

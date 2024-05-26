@@ -52,6 +52,54 @@ class HomeApi {
     }
   }
 
+  Future<Response> getPlaceComments({int? placeId, bool? isShowdLoading}) async {
+    try {
+      final Response response = await _apiService.get(
+        '${AppUrl.placeDetail}$placeId/comments',
+        isShowLoading: isShowdLoading ?? true,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> callDeleteComment({int? commentId}) async {
+    try {
+      final Response response = await _apiService.delete(
+        '${AppUrl.updateComment}$commentId',
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> callUpdateComment({int? commentId, Map<String, dynamic>? data}) async {
+    try {
+      final Response response = await _apiService.patch(
+        '${AppUrl.updateComment}$commentId',
+        data: data,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> callCreateComment({Map<String, dynamic>? data}) async {
+    try {
+      final Response response = await _apiService.post(
+        AppUrl.updateComment,
+        data: data,
+        isShowLoading: false,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Response> callTrendingClothItems({Map<String, dynamic>? data}) async {
     try {
       final Response response = await _apiService.post(

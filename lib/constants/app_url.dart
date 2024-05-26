@@ -2,14 +2,16 @@ class AppUrl {
   AppUrl._();
 
   // base url
-  static const String baseUrl = "https://go-server-ikbn.onrender.com/api";
+  static const String baseUrl = "https://go-server-ikbn.onrender.com/api/app";
 
   //auth
-  static const String auth = "$baseUrl/auth";
+  static const String auth = "https://go-server-ikbn.onrender.com/api/auth";
 
   static const String login = "$auth/login";
 
   static const String register = "$auth/register";
+
+  static const String forgotPassword = "$auth/forgot_password";
 
   // google
   static const String authGoogle = "$auth/google";
@@ -26,6 +28,10 @@ class AppUrl {
   static const String place = "$baseUrl/place/all_places";
 
   static const String placeDetail = "$baseUrl/place/";
+
+  static const String placeComment = "$baseUrl/place/";
+
+  static const String updateComment = "$baseUrl/comment/";
 
   //admin url
   static const String admin = "$baseUrl/admin";
@@ -46,7 +52,7 @@ class AppUrl {
   static const String getUserFromToken = "$users/info";
 
   //up load image url
-  static const String upLoadImage = "$baseUrl/upload/";
+  static const String upLoadImage = "https://go-server-ikbn.onrender.com/api/upload";
 
   //items url
   static const String items = "$baseUrl/items";

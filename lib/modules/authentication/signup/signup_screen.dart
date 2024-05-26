@@ -7,6 +7,7 @@ import 'package:travel_app/constants/validator.dart';
 import 'package:travel_app/gen/assets.gen.dart';
 import 'package:travel_app/modules/authentication/signup/signup_controller.dart';
 import 'package:travel_app/modules/authentication/widget/text_form_field_widget.dart';
+import 'package:travel_app/utils/share_components/dialog/toast.dart';
 
 class SignUpScreen extends GetView<SignUpController> {
   const SignUpScreen({super.key});
@@ -141,6 +142,9 @@ class SignUpScreen extends GetView<SignUpController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             InkWell(
+                              onTap: () {
+                                ToastUtil.showText("The feature will be updated in the next version.");
+                              },
                               child: SizedBox(
                                 height: 44,
                                 child: Assets.images.fbIcon.image(),

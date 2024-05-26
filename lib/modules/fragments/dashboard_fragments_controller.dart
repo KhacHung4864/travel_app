@@ -7,10 +7,10 @@ import 'package:travel_app/data/local/app_storage.dart';
 import 'package:travel_app/data/model/user_model.dart';
 import 'package:travel_app/data/network/api/user_api.dart';
 import 'package:travel_app/data/network/service/api_exception.dart';
-import 'package:travel_app/modules/fragments/favorites/favorites_screen.dart';
 import 'package:travel_app/modules/fragments/home/home_screen.dart';
-import 'package:travel_app/modules/fragments/order/order_screen.dart';
 import 'package:travel_app/modules/fragments/profile/profile_screen.dart';
+import 'package:travel_app/modules/fragments/search_place/search_item_screen.dart';
+import 'package:travel_app/modules/fragments/trips/trip_screen.dart';
 import 'package:travel_app/utils/share_components/dialog/dialog.dart';
 
 class DashboardFragmentsController extends GetxController {
@@ -23,8 +23,8 @@ class DashboardFragmentsController extends GetxController {
 
   List<Widget> fragmentScreen = [
     const HomeScreen(),
-    const FavoritesScreen(),
-    const OrderScreen(),
+    const SearchScreen(),
+    const TripScreen(),
     const ProfileScreen(),
   ];
   var tabNames = ['Home', 'Maps', 'Message', 'Profile'].obs;
@@ -35,14 +35,14 @@ class DashboardFragmentsController extends GetxController {
       'label': 'Home',
     },
     {
-      'active_icon': Icons.favorite,
-      'non_active_icon': Icons.map,
-      'label': 'Maps',
+      'active_icon': Icons.search,
+      'non_active_icon': Icons.search_outlined,
+      'label': 'Search',
     },
     {
-      'active_icon': Icons.message_outlined,
-      'non_active_icon': Icons.message_outlined,
-      'label': 'Message',
+      'active_icon': Icons.card_travel_rounded,
+      'non_active_icon': Icons.card_travel_sharp,
+      'label': 'Trip',
     },
     {
       'active_icon': Icons.person,

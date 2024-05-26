@@ -39,6 +39,18 @@ class UserApi {
     }
   }
 
+  Future<Response> forgotPassword({Map<String, dynamic>? data}) async {
+    try {
+      final Response response = await _apiService.post(
+        AppUrl.forgotPassword,
+        data: data,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Response> callLoginWithGoogle() async {
     try {
       final Response response = await _apiService.get(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_app/configs/app_fonts.dart';
-import 'package:travel_app/configs/palette.dart';
 import 'package:travel_app/gen/assets.gen.dart';
 import 'package:travel_app/modules/fragments/home/home_controller.dart';
 import 'package:travel_app/modules/fragments/widgets/category_widget.dart';
@@ -19,7 +18,7 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: () async {
-          await controller.initData();
+          await controller.initData(isShowLoading: false);
         },
         child: SingleChildScrollView(
             child: Padding(
@@ -28,10 +27,6 @@ class HomeScreen extends GetView<HomeController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 16.h),
-              //search bar widget
-              showSearchBarWidget(),
-
-              SizedBox(height: 24.h),
               Obx(() {
                 return CarouselSlider(
                   options: CarouselOptions(
@@ -127,10 +122,7 @@ class HomeScreen extends GetView<HomeController> {
               ),
               const JudulWidget(judul: "Popular Destination"),
               SizedBox(
-                height: 22.h,
-              ),
-              SizedBox(
-                height: 22.h,
+                height: 10.h,
               ),
               Obx(() {
                 return Column(
@@ -155,57 +147,5 @@ class HomeScreen extends GetView<HomeController> {
             ],
           ),
         )));
-  }
-
-  Widget showSearchBarWidget() {
-    return TextField(
-      style: AppFont.t.black,
-      controller: controller.searchController,
-      decoration: InputDecoration(
-        prefixIcon: IconButton(
-          onPressed: () async {
-            await Get.toNamed(Routes.searchSreen, arguments: controller.searchController.text.trim());
-            controller.searchController.clear();
-          },
-          icon: const Icon(
-            Icons.search,
-            color: Palette.primary,
-          ),
-        ),
-        hintText: 'Search best place here...',
-        hintStyle: AppFont.t.grey.s(12),
-        // suffixIcon: IconButton(
-        //   onPressed: () {
-        //     Get.toNamed(Routes.cart);
-        //   },
-        //   icon: const Icon(
-        //     Icons.shopping_cart,
-        //     color: Palette.primary,
-        //   ),
-        // ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 2.w,
-            color: Palette.primary,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 2.w,
-            color: Palette.primary,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            width: 2.w,
-            color: Palette.primary,
-          ),
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 10.h,
-        ),
-      ),
-    );
   }
 }

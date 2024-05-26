@@ -35,7 +35,7 @@ class _ChatGPTScreenState extends State<ChatGPTScreen> {
   final ChatUser _gptChatUser = ChatUser(
     id: '2',
     firstName: 'Chat',
-    lastName: 'GPT',
+    lastName: 'Bot',
   );
 
   List<ChatMessage> _messages = <ChatMessage>[];
@@ -55,7 +55,7 @@ class _ChatGPTScreenState extends State<ChatGPTScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(0, 166, 126, 1),
         title: const Text(
-          'GPT Chat',
+          'Travel App Chatbot',
           style: TextStyle(
             color: Colors.white,
           ),
@@ -77,7 +77,7 @@ class _ChatGPTScreenState extends State<ChatGPTScreen> {
     );
   }
 
-  Future<void> getChatResponse(ChatMessage m, {bool? isFirst = false}) async {
+  Future<void> getChatResponse(ChatMessage m, {bool isFirst = false}) async {
     setState(() {
       _messages.insert(0, m);
       _typingUsers.add(_gptChatUser);
@@ -91,25 +91,48 @@ class _ChatGPTScreenState extends State<ChatGPTScreen> {
     }).toList();
     final request = ChatCompleteText(
       messages: messagesHistory,
-      maxToken: 200,
+      maxToken: 500,
       model: GptTurbo0301ChatModel(),
     );
-    final response = await _openAI.onChatCompletion(request: request);
-    for (var element in response!.choices) {
-      if (element.message != null) {
-        setState(() {
-          _messages.insert(0, ChatMessage(user: _gptChatUser, createdAt: DateTime.now(), text: element.message!.content));
-        });
-        // Lưu tin nhắn vào local theo ID cuộc trò chuyện
-
-        await saveMessage(placeItem?.id.toString() ?? '', m);
-
-        await saveMessage(placeItem?.id.toString() ?? '', ChatMessage(user: _gptChatUser, createdAt: DateTime.now(), text: element.message!.content));
+    try {
+      final response = await _openAI.onChatCompletion(request: request);
+      for (var element in response!.choices) {
+        if (element.message != null) {
+          final chatMessage = ChatMessage(
+            user: _gptChatUser,
+            createdAt: DateTime.now(),
+            text: element.message!.content,
+          );
+          setState(() {
+            _messages.insert(0, chatMessage);
+          });
+          await saveMessage(placeItem?.id.toString() ?? '', m);
+          await saveMessage(placeItem?.id.toString() ?? '', chatMessage);
+        }
       }
+      if (isFirst) {
+        final firstMessage = ChatMessage(
+          user: _gptChatUser,
+          createdAt: DateTime.now(),
+          text: 'Bạn có thể hỏi tôi thêm về địa điểm du lịch ${placeItem?.name}.',
+        );
+        _messages.insert(0, firstMessage);
+        await saveMessage(placeItem?.id.toString() ?? '', firstMessage);
+      }
+    } catch (e) {
+      final errorMessage = ChatMessage(
+        user: _gptChatUser,
+        createdAt: DateTime.now(),
+        text: 'có lỗi sảy ra xin vui lòng thử lại.',
+      );
+      setState(() {
+        _messages.insert(0, errorMessage);
+      });
+    } finally {
+      setState(() {
+        _typingUsers.remove(_gptChatUser);
+      });
     }
-    setState(() {
-      _typingUsers.remove(_gptChatUser);
-    });
   }
 
   Future<void> saveMessage(String chatId, ChatMessage message) async {
@@ -134,8 +157,8 @@ class _ChatGPTScreenState extends State<ChatGPTScreen> {
     if (_messages.isEmpty) {
       getChatResponse(
         ChatMessage(
-          text: 'Tư vấn về địa điểm du lịch ${placeItem?.name}',
-          user: _user,
+          text: 'Xin chào, sau đây tôi sẽ tư vấn cho bạn về địa điểm du lịch ${placeItem?.name}',
+          user: _gptChatUser,
           createdAt: DateTime.now(),
         ),
         isFirst: true,

@@ -162,8 +162,11 @@ class ApiService {
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
+    bool isShowLoading = true,
   }) async {
     try {
+      if (isShowLoading) EasyLoading.show(status: 'Loading...');
+
       final Response response = await _dio.delete(
         url,
         data: data,
@@ -171,6 +174,7 @@ class ApiService {
         options: options,
         cancelToken: cancelToken,
       );
+      if (isShowLoading) EasyLoading.dismiss();
       return response;
     } catch (e) {
       rethrow;

@@ -50,12 +50,13 @@ class Places {
   double? longitude;
   String? description;
   int? price;
+  double? rate;
   List<Categories>? categories;
   List<String>? images;
   String? createdAt;
   String? updatedAt;
 
-  Places({this.id, this.name, this.address, this.latitude, this.longitude, this.description, this.price, this.categories, this.images, this.createdAt, this.updatedAt});
+  Places({this.id, this.name, this.address, this.latitude, this.longitude, this.description, this.price, this.rate, this.categories, this.images, this.createdAt, this.updatedAt});
 
   Places.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -65,6 +66,7 @@ class Places {
     longitude = json["longitude"];
     description = json["description"];
     price = json["price"];
+    rate = json["rate"];
     categories = json["categories"] == null ? null : (json["categories"] as List).map((e) => Categories.fromJson(e)).toList();
     images = json["images"] == null ? null : List<String>.from(json["images"]);
     createdAt = json["created_at"];
@@ -80,6 +82,7 @@ class Places {
     _data["longitude"] = longitude;
     _data["description"] = description;
     _data["price"] = price;
+    _data["rate"] = rate;
     if (categories != null) {
       _data["categories"] = categories?.map((e) => e.toJson()).toList();
     }

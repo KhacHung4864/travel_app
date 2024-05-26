@@ -37,6 +37,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/fb_icon.png
   AssetGenImage get fbIcon => const AssetGenImage('assets/images/fb_icon.png');
 
+  /// File path: assets/images/forgot.png
+  AssetGenImage get forgot => const AssetGenImage('assets/images/forgot.png');
+
   /// File path: assets/images/google_icon.png
   AssetGenImage get googleIcon =>
       const AssetGenImage('assets/images/google_icon.png');
@@ -109,6 +112,7 @@ class $AssetsImagesGen {
         admin,
         calendarIcon,
         fbIcon,
+        forgot,
         googleIcon,
         historyIcon,
         igIcon,

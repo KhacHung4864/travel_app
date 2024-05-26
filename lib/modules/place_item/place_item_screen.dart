@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:travel_app/configs/app_fonts.dart';
 import 'package:travel_app/configs/palette.dart';
 import 'package:travel_app/gen/assets.gen.dart';
+import 'package:travel_app/modules/fragments/widgets/comment_widget.dart';
 import 'package:travel_app/modules/fragments/widgets/preview_image.dart';
 import 'package:travel_app/modules/map/google_map/open_google_map.dart';
 import 'package:travel_app/modules/place_item/place_item_controller.dart';
@@ -65,26 +66,26 @@ class PlaceItemPage extends GetView<PlaceItemController> {
                       ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.map, arguments: [controller.placeItem]);
-                    },
-                    child: Container(
-                      height: 40.h,
-                      width: 36.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          size: 18.sp,
-                          Icons.location_on,
-                          color: const Color.fromARGB(255, 255, 40, 40),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Get.toNamed(Routes.map, arguments: [controller.placeItem]);
+                  //   },
+                  //   child: Container(
+                  //     height: 40.h,
+                  //     width: 36.w,
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(8.r),
+                  //       color: Colors.white,
+                  //     ),
+                  //     child: Center(
+                  //       child: Icon(
+                  //         size: 18.sp,
+                  //         Icons.location_on,
+                  //         color: const Color.fromARGB(255, 255, 40, 40),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   TextButton(
                     onPressed: () {
                       MapUtils.openMap(controller.placeItem!.latitude!, controller.placeItem!.longitude!);
@@ -135,18 +136,23 @@ class PlaceItemPage extends GetView<PlaceItemController> {
                               SizedBox(
                                 height: 8.h,
                               ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: Palette.primary,
-                                    size: 16.r,
-                                  ),
-                                  SizedBox(
-                                    width: 4.w,
-                                  ),
-                                  Text(controller.placeItem?.address ?? '', style: AppFont.t.s(14).w600.textColor),
-                                ],
+                              InkWell(
+                                onTap: () {
+                                  Get.toNamed(Routes.map, arguments: [controller.placeItem]);
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on,
+                                      color: Palette.primary,
+                                      size: 16.r,
+                                    ),
+                                    SizedBox(
+                                      width: 4.w,
+                                    ),
+                                    Text(controller.placeItem?.address ?? '', style: AppFont.t.s(14).w600.textColor),
+                                  ],
+                                ),
                               )
                             ],
                           ),
@@ -182,7 +188,7 @@ class PlaceItemPage extends GetView<PlaceItemController> {
                               },
                               child: Row(
                                 children: [
-                                  Text("Review", style: AppFont.t.s(12).w400.black7C838D),
+                                  Text("Chat Bot Review", style: AppFont.t.s(12).w400.black7C838D),
                                   SizedBox(
                                     width: 4.w,
                                   ),
@@ -201,32 +207,29 @@ class PlaceItemPage extends GetView<PlaceItemController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Preview", style: AppFont.t.s(18).w700.textColor),
-                          TextButton(
-                            onPressed: () {},
-                            child: Container(
-                              height: 30.h,
-                              width: 50.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-                                color: Palette.white,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    size: 18.sp,
-                                    Icons.star,
-                                    color: const Color.fromARGB(255, 248, 229, 1),
-                                  ),
-                                  SizedBox(
-                                    width: 4.w,
-                                  ),
-                                  Text(
-                                    "4.8",
-                                    style: AppFont.t.s(12).w400.secondTextColor,
-                                  ),
-                                ],
-                              ),
+                          Container(
+                            height: 30.h,
+                            width: 50.w,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+                              color: Palette.white,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  size: 18.sp,
+                                  Icons.star,
+                                  color: const Color.fromARGB(255, 248, 229, 1),
+                                ),
+                                SizedBox(
+                                  width: 4.w,
+                                ),
+                                Text(
+                                  controller.placeItem?.rate?.toStringAsFixed(1) ?? '',
+                                  style: AppFont.t.s(12).w400.secondTextColor,
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -240,7 +243,80 @@ class PlaceItemPage extends GetView<PlaceItemController> {
                         ),
                       ),
                       SizedBox(
-                        height: 36.h,
+                        height: 20.h,
+                      ),
+                      Row(
+                        children: [
+                          Text("Review", style: AppFont.t.s(18).w700.textColor),
+                          const Spacer(),
+                          Container(
+                            width: 100.w,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Palette.primary,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                splashColor: Colors.white,
+                                onTap: () async {
+                                  final bool check = await showReview(context);
+                                  if (check == false) {
+                                    controller.createComment(rate: controller.rating.value, comment: controller.commentController.text);
+                                  }
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Comment",
+                                      style: AppFont.t.s(14).w700.white,
+                                    ),
+                                    const Spacer(),
+                                    const Icon(
+                                      Icons.comment,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Obx(() {
+                        return Container(
+                          padding: EdgeInsets.only(top: 12.r, right: 12.r, bottom: 12.r),
+                          child: Column(
+                            children: [
+                              for (var item in controller.listComments)
+                                CommentWidget(
+                                  onDelete: () async {
+                                    final bool check = await showDelete(context);
+                                    if (check) {
+                                      controller.deleteComment(commentId: item.id);
+                                    }
+                                  },
+                                  onEdit: () async {
+                                    final bool check = await showReview(context, rate: item.rate, comment: item.comment, isEdit: true);
+                                    if (check) {
+                                      controller.updateComment(commentId: item.id, rate: item.rate, comment: item.comment);
+                                    }
+                                  },
+                                  isShowUpdate: item.userId == controller.dashboardFragmentsController.currentUser.value?.id,
+                                  avatarUrl: item.user?.avatar ?? '',
+                                  userName: item.user?.username ?? '',
+                                  comment: item.comment ?? '',
+                                  rating: item.rate ?? 0,
+                                  commentTime: DateTime.parse(item.createdAt ?? '').toLocal(),
+                                ),
+                            ],
+                          ),
+                        );
+                      }),
+                      SizedBox(
+                        height: 20.h,
                       ),
                       Container(
                         height: 48.h,
@@ -276,6 +352,94 @@ class PlaceItemPage extends GetView<PlaceItemController> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<dynamic> showReview(BuildContext context, {int? rate, String? comment, bool isEdit = false}) {
+    controller.rating.value = rate ?? 0;
+    controller.commentController.text = comment ?? '';
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add a Comment'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller.commentController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter your comment',
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 10),
+              Obx(() {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    5,
+                    (index) => IconButton(
+                      icon: Icon(
+                        index < controller.rating.value ? Icons.star : Icons.star_border,
+                        color: Colors.amber,
+                      ),
+                      onPressed: () {
+                        controller.rating.value = index + 1;
+                      },
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.back(result: isEdit);
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<dynamic> showDelete(BuildContext context, {int? rate, String? comment, bool isEdit = false}) {
+    controller.rating.value = rate ?? 0;
+    controller.commentController.text = comment ?? '';
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete comment'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [Text("Are you sure you want to delete your comment", style: AppFont.t.s(18).w500.secondTextColor)],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.back(result: true);
+              },
+              child: Text('Delete', style: AppFont.t.w500.red),
+            ),
+          ],
+        );
+      },
     );
   }
 }

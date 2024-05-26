@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:travel_app/data/model/banner_models.dart';
 import 'package:travel_app/data/model/category_model.dart';
@@ -23,13 +24,15 @@ class HomeController extends GetxController {
     super.onInit();
   }
 
-  Future<void> initData() async {
+  Future<void> initData({isShowLoading = true}) async {
+    if (isShowLoading) EasyLoading.show(status: 'Loading...');
     await Future.wait([
       getBanner(),
       getCategory(),
-      getPlaces(categoryId: 5, listPlace: listPlaceByCategory),
+      getPlaces(categoryId: 6, listPlace: listPlaceByCategory),
       getPlaces(listPlace: listPlace),
     ]);
+    if (isShowLoading) EasyLoading.dismiss();
   }
 
   Future<List<Banners>> getBanner() async {

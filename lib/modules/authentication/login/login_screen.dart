@@ -8,6 +8,7 @@ import 'package:travel_app/gen/assets.gen.dart';
 import 'package:travel_app/modules/authentication/login/login_controller.dart';
 import 'package:travel_app/modules/authentication/widget/text_form_field_widget.dart';
 import 'package:travel_app/routes/app_pages.dart';
+import 'package:travel_app/utils/share_components/dialog/toast.dart';
 
 class LoginScreen extends GetView<LoginController> {
   LoginScreen({super.key});
@@ -86,9 +87,14 @@ class LoginScreen extends GetView<LoginController> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    'Forget Password?',
-                                    style: AppFont.t.s(14).w500.blueFF0D6EFD,
+                                  InkWell(
+                                    onTap: () {
+                                      Get.toNamed(Routes.forgot);
+                                    },
+                                    child: Text(
+                                      'Forget Password?',
+                                      style: AppFont.t.s(14).w500.blueFF0D6EFD,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -147,6 +153,9 @@ class LoginScreen extends GetView<LoginController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             InkWell(
+                              onTap: () {
+                                ToastUtil.showText("The feature will be updated in the next version.");
+                              },
                               child: SizedBox(
                                 height: 44,
                                 child: Assets.images.fbIcon.image(),
