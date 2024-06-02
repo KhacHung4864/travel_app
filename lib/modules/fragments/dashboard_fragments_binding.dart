@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:travel_app/modules/cart/cart_controller.dart';
 import 'package:travel_app/modules/fragments/search_place/search_item_controller.dart';
 import 'package:travel_app/modules/fragments/trips/trip_controller.dart';
 
@@ -28,8 +27,6 @@ class DashboardFragmentsBinding extends Bindings {
     //Favorites
     Get.lazyPut<FavoritesController>(() => FavoritesController());
 
-    //Cart
-    Get.lazyPut<CartController>(() => CartController());
     // Get.put(CartController());
   }
 }

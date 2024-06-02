@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:travel_app/constants/app_url.dart';
+import 'package:travel_app/configs/constants/app_url.dart';
 import 'package:travel_app/data/local/app_storage.dart';
 
 class ApiService {

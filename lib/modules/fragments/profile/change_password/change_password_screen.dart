@@ -1,58 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:travel_app/configs/constants/validator.dart';
+import 'package:travel_app/configs/app_fonts.dart';
 import 'package:travel_app/configs/palette.dart';
-import 'package:travel_app/gen/assets.gen.dart';
-import 'package:travel_app/modules/authentication/forgot/forgot_controller.dart';
 import 'package:travel_app/modules/authentication/widget/text_form_field_widget.dart';
+import 'package:travel_app/modules/fragments/profile/change_password/change_password_controller.dart';
 
-import '../../../configs/app_fonts.dart';
-
-class ForgotScreen extends GetView<ForgotController> {
-  ForgotScreen({super.key});
+class ChangePassScreen extends GetView<ChangePassController> {
+  ChangePassScreen({super.key});
   final formKey = GlobalKey<FormState>();
 
   void submit(context) async {
     final isValid = formKey.currentState!.validate();
-    if (!isValid || controller.emailController.text.trim().isEmpty) {
+    if (!isValid || controller.oldPassController.text.trim().isEmpty) {
       return;
     }
-    final bool isSuccess = await controller.forgotPassword(data: {
-      "email": controller.emailController.text.trim(),
-      "receive_email": controller.emailController.text.trim(),
+    await controller.changePassword(data: {
+      "old_password": controller.oldPassController.text.trim(), // mật khẩu cũ
+      "new_password": controller.newPassController.text.trim(), // mật khẩu mới
+      "confirm_password": controller.confirmPassController.text.trim(), // xác nhận mật khẩu
     });
-    if (isSuccess == true) {
-      showDialog(
-        context: context,
-        builder: (context) => Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 44,
-                  child: Assets.images.forgot.image(),
-                ),
-                const SizedBox(height: 20),
-                Text('Check your email', style: AppFont.t.s(18).w600),
-                const SizedBox(height: 12),
-                Text(
-                  'We have sent a new password to your email',
-                  style: AppFont.t.s(16).black7C838D,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
 
     formKey.currentState!.save();
   }
@@ -75,13 +42,16 @@ class ForgotScreen extends GetView<ForgotController> {
               child: Column(
                 children: [
                   const SizedBox(height: 90),
-                  Text('Forgot password', style: AppFont.t.s(26).w600),
+                  Text('Change password', style: AppFont.t.s(26).w600),
 
                   const SizedBox(height: 12),
-                  Text(
-                    'Enter your email account to reset your password',
-                    style: AppFont.t.s(16).black7C838D,
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      'Enter Old Password and New Password to make changes',
+                      style: AppFont.t.s(16).black7C838D,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
 
                   const SizedBox(height: 40),
@@ -97,12 +67,45 @@ class ForgotScreen extends GetView<ForgotController> {
                             children: [
                               //email
                               TextFormFieldWidget(
-                                title: 'Email',
-                                controller: controller.emailController,
+                                title: 'Old Password',
+                                isPassword: true,
+                                controller: controller.oldPassController,
                                 icon: Icons.email,
                                 validator: (value) {
-                                  if (value == null || value.trim().isEmpty || ValidatorUlti.isEmail(value.trim())) {
-                                    return 'Please enter a valid email address.';
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter a valid old password.';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 15),
+                              TextFormFieldWidget(
+                                title: 'New Password',
+                                isPassword: true,
+                                controller: controller.newPassController,
+                                icon: Icons.email,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter a valid new password.';
+                                  }
+                                  if (controller.newPassController.text != controller.confirmPassController.text) {
+                                    return 'The new password is not the same.';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 15),
+                              TextFormFieldWidget(
+                                title: 'Confirm Password',
+                                isPassword: true,
+                                controller: controller.confirmPassController,
+                                icon: Icons.email,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter a valid confirm password.';
+                                  }
+                                  if (controller.newPassController.text != controller.confirmPassController.text) {
+                                    return 'The new password is not the same.';
                                   }
                                   return null;
                                 },
@@ -128,7 +131,7 @@ class ForgotScreen extends GetView<ForgotController> {
                                     },
                                     child: Center(
                                       child: Text(
-                                        'Reset Password',
+                                        'Change Password',
                                         style: AppFont.t.s(16).w500.white,
                                       ),
                                     ),

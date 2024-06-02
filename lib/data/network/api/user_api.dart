@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:travel_app/constants/app_url.dart';
+import 'package:travel_app/configs/constants/app_url.dart';
 
 import '../service/api_service.dart';
 
@@ -43,6 +43,18 @@ class UserApi {
     try {
       final Response response = await _apiService.post(
         AppUrl.forgotPassword,
+        data: data,
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> changePassword({Map<String, dynamic>? data}) async {
+    try {
+      final Response response = await _apiService.post(
+        AppUrl.changePassword,
         data: data,
       );
       return response;

@@ -6,6 +6,7 @@ class Routes {
   static const login = '/login';
   static const signUp = '/signUp';
   static const forgot = '/forgot';
+  static const changePass = '/changePass';
   static const dashBoardFragment = '/dashBoardFragment';
   static const home = '/home';
   static const itemDetails = '/itemDetails';

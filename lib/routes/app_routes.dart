@@ -12,6 +12,8 @@ import 'package:travel_app/modules/fragments/dashboard_fragments_binding.dart';
 import 'package:travel_app/modules/fragments/dashboard_fragments_screen.dart';
 import 'package:travel_app/modules/fragments/profile/account/account_binding.dart';
 import 'package:travel_app/modules/fragments/profile/account/account_screen.dart';
+import 'package:travel_app/modules/fragments/profile/change_password/change_password_binding.dart';
+import 'package:travel_app/modules/fragments/profile/change_password/change_password_screen.dart';
 import 'package:travel_app/modules/fragments/search_place/search_item_screen.dart';
 import 'package:travel_app/modules/fragments/trips/trip_screen.dart';
 import 'package:travel_app/modules/map/map_binding.dart';
@@ -89,6 +91,15 @@ class AppPages {
       name: Routes.account,
       page: () => const AccountScreen(),
       binding: AccountBinding(),
+      transition: Transition.rightToLeft,
+      curve: Curves.fastOutSlowIn,
+      fullscreenDialog: true,
+    ),
+    //change Pass
+    GetPage(
+      name: Routes.changePass,
+      page: () => ChangePassScreen(),
+      binding: ChangePassBindigs(),
       transition: Transition.rightToLeft,
       curve: Curves.fastOutSlowIn,
       fullscreenDialog: true,

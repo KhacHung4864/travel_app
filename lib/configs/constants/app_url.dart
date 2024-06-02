@@ -13,6 +13,8 @@ class AppUrl {
 
   static const String forgotPassword = "$auth/forgot_password";
 
+  static const String changePassword = "https://go-server-ikbn.onrender.com/api/app/user/change_password";
+
   // google
   static const String authGoogle = "$auth/google";
 
@@ -52,7 +54,7 @@ class AppUrl {
   static const String getUserFromToken = "$users/info";
 
   //up load image url
-  static const String upLoadImage = "https://go-server-ikbn.onrender.com/api/upload";
+  static const String upLoadImage = "https://go-server-ikbn.onrender.com/api/upload/";
 
   //items url
   static const String items = "$baseUrl/items";

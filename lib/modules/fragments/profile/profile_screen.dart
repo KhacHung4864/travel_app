@@ -40,7 +40,13 @@ class ProfileScreen extends GetView<ProfileController> {
                   Get.toNamed(Routes.account);
                 }),
             const SizedBox(height: 25),
-            _profileItem(asset: Assets.svg.iconLockAc, title: "Face ID/ Touch ID", content: "Make changes to your account", onTap: controller.showNotifiCation),
+            _profileItem(
+                asset: Assets.svg.iconLockAc,
+                title: "Change Password",
+                content: "Make changes to your password",
+                onTap: () {
+                  Get.toNamed(Routes.changePass);
+                }),
             const SizedBox(height: 25),
             _profileItem(asset: Assets.svg.iconAuthen, title: "Two-Factor Authentication", content: "Further secure your account for safety", onTap: controller.showNotifiCation),
             const SizedBox(height: 25),

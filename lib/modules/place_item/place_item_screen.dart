@@ -295,13 +295,13 @@ class PlaceItemPage extends GetView<PlaceItemController> {
                                   onDelete: () async {
                                     final bool check = await showDelete(context);
                                     if (check) {
-                                      controller.deleteComment(commentId: item.id);
+                                      controller.deleteComment(commentItem: item);
                                     }
                                   },
                                   onEdit: () async {
                                     final bool check = await showReview(context, rate: item.rate, comment: item.comment, isEdit: true);
                                     if (check) {
-                                      controller.updateComment(commentId: item.id, rate: item.rate, comment: item.comment);
+                                      controller.updateComment(commentId: item.id, rate: controller.rating.value, comment: controller.commentController.text);
                                     }
                                   },
                                   isShowUpdate: item.userId == controller.dashboardFragmentsController.currentUser.value?.id,

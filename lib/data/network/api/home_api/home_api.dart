@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:travel_app/constants/app_url.dart';
+import 'package:travel_app/configs/constants/app_url.dart';
 import 'package:travel_app/data/network/service/api_service.dart';
 
 class HomeApi {
@@ -80,6 +80,7 @@ class HomeApi {
       final Response response = await _apiService.patch(
         '${AppUrl.updateComment}$commentId',
         data: data,
+        isShowLoading: false,
       );
       return response;
     } catch (e) {

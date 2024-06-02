@@ -50,7 +50,7 @@ class Places {
   double? longitude;
   String? description;
   int? price;
-  double? rate;
+  dynamic rate;
   List<Categories>? categories;
   List<String>? images;
   String? createdAt;

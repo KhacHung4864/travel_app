@@ -77,10 +77,12 @@ class PlaceItemController extends GetxController {
 
   Future<Places?> updateComment({int? commentId, int? rate, String? comment}) async {
     try {
+      EasyLoading.show(status: 'Loading...');
       final response = await _homeApi.callUpdateComment(commentId: commentId, data: {"rate": rate, "comment": comment});
       CommentModel resData = CommentModel.fromJson(response.data);
       if (response.statusCode == 200) {
         if (resData.code == 0) {
+          await getPlaceComments(placeId: placeItem?.id, isShowdLoading: false);
         } else {
           showError(resData.message);
         }
@@ -90,16 +92,20 @@ class PlaceItemController extends GetxController {
     } on DioException catch (e) {
       final ApiException apiException = ApiException.fromDioError(e);
       throw apiException;
+    } finally {
+      EasyLoading.dismiss();
     }
+
     return placeItem;
   }
 
-  Future<Places?> deleteComment({int? commentId}) async {
+  Future<Places?> deleteComment({Comments? commentItem}) async {
     try {
-      final response = await _homeApi.callDeleteComment(commentId: commentId);
+      final response = await _homeApi.callDeleteComment(commentId: commentItem?.id);
       CommentModel resData = CommentModel.fromJson(response.data);
       if (response.statusCode == 200) {
         if (resData.code == 0) {
+          listComments.remove(commentItem);
         } else {
           showError(resData.message);
         }

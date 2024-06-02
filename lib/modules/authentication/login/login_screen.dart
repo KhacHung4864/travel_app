@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_app/configs/app_fonts.dart';
+import 'package:travel_app/configs/constants/validator.dart';
 import 'package:travel_app/configs/palette.dart';
-import 'package:travel_app/constants/validator.dart';
 import 'package:travel_app/gen/assets.gen.dart';
 import 'package:travel_app/modules/authentication/login/login_controller.dart';
 import 'package:travel_app/modules/authentication/widget/text_form_field_widget.dart';
@@ -74,6 +74,7 @@ class LoginScreen extends GetView<LoginController> {
                               //password
                               TextFormFieldWidget(
                                 title: 'Password',
+                                isPassword: true,
                                 controller: controller.passwordController,
                                 icon: Icons.vpn_key_sharp,
                                 validator: (value) {

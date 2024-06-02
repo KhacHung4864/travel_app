@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:travel_app/constants/consts.dart';
+import 'package:travel_app/configs/constants/consts.dart';
 import 'package:travel_app/data/model/places/place_model.dart';
 
 class ChatGPTScreen extends StatefulWidget {

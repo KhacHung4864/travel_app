@@ -12,6 +12,7 @@ class TextFormFieldWidget extends StatefulWidget {
     required this.title,
     this.keyboardType,
     this.maxline,
+    this.isPassword = false,
   });
   final int? maxline;
   final String title;
@@ -19,6 +20,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final IconData icon;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
+  final bool isPassword;
 
   @override
   State<TextFormFieldWidget> createState() => _TextFormFieldWidgetState();
@@ -31,12 +33,12 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
-      obscureText: widget.title == 'Password' ? isObsecure : false,
+      obscureText: widget.isPassword ? isObsecure : false,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
           errorStyle: AppFont.t.red.s(13),
           hintText: widget.title,
-          suffixIcon: widget.title == 'Password'
+          suffixIcon: widget.isPassword
               ? GestureDetector(
                   onTap: () {
                     setState(() {
