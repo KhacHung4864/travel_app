@@ -29,7 +29,7 @@ class HomeController extends GetxController {
     await Future.wait([
       getBanner(),
       getCategory(),
-      getPlaces(categoryId: 6, listPlace: listPlaceByCategory),
+      getPlaces(categoryId: 1, listPlace: listPlaceByCategory),
       getPlaces(listPlace: listPlace),
     ]);
     if (isShowLoading) EasyLoading.dismiss();

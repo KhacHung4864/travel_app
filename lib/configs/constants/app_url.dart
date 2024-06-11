@@ -27,7 +27,7 @@ class AppUrl {
 
   static const String category = "$baseUrl/category/";
 
-  static const String place = "$baseUrl/place/all_places";
+  static const String place = "$baseUrl/place/";
 
   static const String placeDetail = "$baseUrl/place/";
 

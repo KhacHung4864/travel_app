@@ -92,7 +92,7 @@ class UserApi {
       String imageName = DateTime.now().millisecondsSinceEpoch.toString();
 
       FormData formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(
+        'file': MultipartFile.fromFile(
           filePath,
           filename: imageName,
         ),

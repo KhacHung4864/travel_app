@@ -107,7 +107,7 @@ class HomeScreen extends GetView<HomeController> {
                       children: controller.listPlaceByCategory.map((item) {
                         return PlaceByCategoryItem(
                           onTap: () {
-                            Get.toNamed(Routes.placeDetail, arguments: [item]);
+                            Get.toNamed(Routes.placeDetail, arguments: [item.id]);
                           },
                           gambar: item.images?.first ?? '',
                           harga: item.price ?? 0,
@@ -130,7 +130,7 @@ class HomeScreen extends GetView<HomeController> {
                     for (var item in controller.listPlace)
                       PopularWidget(
                         onTap: () {
-                          Get.toNamed(Routes.placeDetail, arguments: [item]);
+                          Get.toNamed(Routes.placeDetail, arguments: [item.id]);
                         },
                         address: item.address ?? '',
                         desc: item.description ?? '',

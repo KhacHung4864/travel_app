@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:travel_app/configs/app_fonts.dart';
 import 'package:travel_app/configs/palette.dart';
-import 'package:travel_app/modules/fragments/search_place/search_item_controller.dart';
+import 'package:travel_app/modules/fragments/add_place/add_place_controller.dart';
 import 'package:travel_app/modules/fragments/widgets/popular_widget.dart';
 import 'package:travel_app/routes/app_pages.dart';
 
-class SearchScreen extends GetView<SearchItemController> {
-  const SearchScreen({super.key});
+class AddPlaceScreen extends GetView<AddPlaceController> {
+  const AddPlaceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

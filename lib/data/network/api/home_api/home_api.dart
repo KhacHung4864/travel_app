@@ -45,6 +45,7 @@ class HomeApi {
     try {
       final Response response = await _apiService.get(
         '${AppUrl.placeDetail}$placeId',
+        isShowLoading: false,
       );
       return response;
     } catch (e) {
@@ -92,31 +93,6 @@ class HomeApi {
     try {
       final Response response = await _apiService.post(
         AppUrl.updateComment,
-        data: data,
-        isShowLoading: false,
-      );
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> callTrendingClothItems({Map<String, dynamic>? data}) async {
-    try {
-      final Response response = await _apiService.post(
-        AppUrl.trendingClothes,
-        data: data,
-      );
-      return response;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<Response> callAllClothItems({Map<String, dynamic>? data}) async {
-    try {
-      final Response response = await _apiService.post(
-        AppUrl.newClothes,
         data: data,
         isShowLoading: false,
       );

@@ -24,4 +24,7 @@ class Routes {
   static const account = '/account';
   static const chatGPT = '/chatGPT';
   static const map = '/map';
+  static const createTrip = '/createTrip';
+  static const pickPlace = '/pickPlace';
+  static const addPlace = '/addPlace';
 }

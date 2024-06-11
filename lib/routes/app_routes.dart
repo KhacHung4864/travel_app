@@ -8,6 +8,8 @@ import 'package:travel_app/modules/authentication/login/login_screen.dart';
 import 'package:travel_app/modules/authentication/signup/signup_binding.dart';
 import 'package:travel_app/modules/authentication/signup/signup_screen.dart';
 import 'package:travel_app/modules/chatGPT/chatgpt_screen.dart';
+import 'package:travel_app/modules/fragments/add_place/add_place_binding.dart';
+import 'package:travel_app/modules/fragments/add_place/add_place_screen.dart';
 import 'package:travel_app/modules/fragments/dashboard_fragments_binding.dart';
 import 'package:travel_app/modules/fragments/dashboard_fragments_screen.dart';
 import 'package:travel_app/modules/fragments/profile/account/account_binding.dart';
@@ -15,6 +17,9 @@ import 'package:travel_app/modules/fragments/profile/account/account_screen.dart
 import 'package:travel_app/modules/fragments/profile/change_password/change_password_binding.dart';
 import 'package:travel_app/modules/fragments/profile/change_password/change_password_screen.dart';
 import 'package:travel_app/modules/fragments/search_place/search_item_screen.dart';
+import 'package:travel_app/modules/fragments/trips/create_trip/create_trip_binding.dart';
+import 'package:travel_app/modules/fragments/trips/create_trip/create_trip_screen.dart';
+import 'package:travel_app/modules/fragments/trips/create_trip/pick_place_screen.dart';
 import 'package:travel_app/modules/fragments/trips/trip_screen.dart';
 import 'package:travel_app/modules/map/map_binding.dart';
 import 'package:travel_app/modules/map/map_screen.dart';
@@ -62,7 +67,7 @@ class AppPages {
     //oder
     GetPage(
       name: Routes.order,
-      page: () => const TripScreen(),
+      page: () => TripScreen(),
       binding: DashboardFragmentsBinding(),
       transition: Transition.rightToLeft,
       curve: Curves.fastOutSlowIn,
@@ -117,6 +122,33 @@ class AppPages {
       name: Routes.map,
       page: () => const MapScreen(),
       binding: MapBinding(),
+      transition: Transition.rightToLeft,
+      curve: Curves.fastOutSlowIn,
+      fullscreenDialog: true,
+    ),
+
+    GetPage(
+      name: Routes.createTrip,
+      page: () => CreateTripScreen(),
+      binding: CreateTripBinding(),
+      transition: Transition.rightToLeft,
+      curve: Curves.fastOutSlowIn,
+      fullscreenDialog: true,
+    ),
+
+    GetPage(
+      name: Routes.pickPlace,
+      page: () => const PickPlaceScreen(),
+      binding: CreateTripBinding(),
+      transition: Transition.rightToLeft,
+      curve: Curves.fastOutSlowIn,
+      fullscreenDialog: true,
+    ),
+
+    GetPage(
+      name: Routes.addPlace,
+      page: () => const AddPlaceScreen(),
+      binding: AddPlaceBinding(),
       transition: Transition.rightToLeft,
       curve: Curves.fastOutSlowIn,
       fullscreenDialog: true,

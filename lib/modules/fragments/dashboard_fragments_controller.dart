@@ -24,7 +24,7 @@ class DashboardFragmentsController extends GetxController {
   List<Widget> fragmentScreen = [
     const HomeScreen(),
     const SearchScreen(),
-    const TripScreen(),
+    TripScreen(),
     const ProfileScreen(),
   ];
   var tabNames = ['Home', 'Maps', 'Message', 'Profile'].obs;
