@@ -16,13 +16,14 @@ class CreateTripScreen extends GetView<CreateTripController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Create Trip',
-          style: AppFont.t.s(20).w700.black,
+          (controller.tripController.isEdit == true) ? 'Edit Trip' : 'Create Trip',
+          style: AppFont.t.s(20).w700.white,
         ),
         centerTitle: true,
         elevation: 10,
+        backgroundColor: Palette.primary,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -36,7 +37,16 @@ class CreateTripScreen extends GetView<CreateTripController> {
             child: ListView(
               children: <Widget>[
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Trip Name'),
+                  controller: controller.tripName,
+                  decoration: InputDecoration(
+                    labelText: 'Trip Name',
+                    labelStyle: AppFont.t.s(16).w600.black,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Palette.blackF6F6F8,
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter a trip name';
@@ -44,96 +54,100 @@ class CreateTripScreen extends GetView<CreateTripController> {
                     return null;
                   },
                   onSaved: (value) {
-                    controller.tripName = value!;
+                    controller.tripName.text = value!;
                   },
                 ),
                 const SizedBox(height: 25),
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: () async {
-                        controller.isCheck.value = false;
-                        var pickDate = await showDatePicker(
-                            context: context,
-                            initialDate: controller.startDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.startDate.value) : DateTime.now(),
-                            firstDate: DateTime(1700),
-                            lastDate: controller.returnDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.returnDate.value) : DateTime(3000));
-                        if (pickDate != null) {
-                          controller.startDate.value = pickDate.millisecondsSinceEpoch;
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10.w,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Palette.blackF6F6F8,
-                          borderRadius: BorderRadius.circular(15.sp),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Icon(Icons.calendar_month, size: 25),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Start date',
-                                  style: AppFont.t.s(13).w700,
-                                ),
-                                Text(
-                                  (controller.startDate.value == 0) ? 'dd/MM/yyyy'.tr : DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(controller.startDate.value)),
-                                  style: AppFont.t.s(13).w700.copyWith(color: Colors.black54),
-                                ),
-                              ],
-                            ),
-                          ],
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          controller.isCheck.value = false;
+                          var pickDate = await showDatePicker(
+                              context: context,
+                              initialDate: controller.startDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.startDate.value) : DateTime.now(),
+                              firstDate: DateTime(1700),
+                              lastDate: controller.returnDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.returnDate.value) : DateTime(3000));
+                          if (pickDate != null) {
+                            controller.startDate.value = pickDate.millisecondsSinceEpoch;
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 12.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Palette.blackF6F6F8,
+                            borderRadius: BorderRadius.circular(10.sp),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Icon(Icons.calendar_today, size: 25, color: Colors.blueAccent),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Start date',
+                                    style: AppFont.t.s(14).w600.black,
+                                  ),
+                                  Text(
+                                    (controller.startDate.value == 0) ? 'dd/MM/yyyy'.tr : DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(controller.startDate.value)),
+                                    style: AppFont.t.s(14).w600.copyWith(color: Colors.black54),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () async {
-                        controller.isCheck.value = false;
-                        var pickDate = await showDatePicker(
-                            context: context,
-                            initialDate: controller.returnDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.returnDate.value) : DateTime.now(),
-                            firstDate: controller.startDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.startDate.value) : DateTime(1700),
-                            lastDate: DateTime(3000));
-                        if (pickDate != null) {
-                          controller.returnDate.value = pickDate.millisecondsSinceEpoch;
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10.w,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Palette.blackF6F6F8,
-                          borderRadius: BorderRadius.circular(15.sp),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Icon(Icons.calendar_month, size: 25),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Return date',
-                                  style: AppFont.t.s(13).w700,
-                                ),
-                                Text(
-                                  (controller.returnDate.value == 0) ? 'dd/MM/yyyy'.tr : DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(controller.returnDate.value)),
-                                  style: AppFont.t.s(13).w700.copyWith(color: Colors.black54),
-                                ),
-                              ],
-                            ),
-                          ],
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          controller.isCheck.value = false;
+                          var pickDate = await showDatePicker(
+                              context: context,
+                              initialDate: controller.returnDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.returnDate.value) : DateTime.now(),
+                              firstDate: controller.startDate.value != 0 ? DateTime.fromMillisecondsSinceEpoch(controller.startDate.value) : DateTime(1700),
+                              lastDate: DateTime(3000));
+                          if (pickDate != null) {
+                            controller.returnDate.value = pickDate.millisecondsSinceEpoch;
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 12.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Palette.blackF6F6F8,
+                            borderRadius: BorderRadius.circular(10.sp),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Icon(Icons.calendar_today, size: 25, color: Colors.orangeAccent),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Return date',
+                                    style: AppFont.t.s(14).w600.black,
+                                  ),
+                                  Text(
+                                    (controller.returnDate.value == 0) ? 'dd/MM/yyyy'.tr : DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(controller.returnDate.value)),
+                                    style: AppFont.t.s(14).w600.copyWith(color: Colors.black54),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -144,40 +158,43 @@ class CreateTripScreen extends GetView<CreateTripController> {
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    const SizedBox(width: 10),
-                    const Icon(Icons.person),
+                    const Icon(Icons.person, color: Colors.blueAccent),
                     const SizedBox(width: 10),
                     Text('Person', style: AppFont.t.s(15).w700.black),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        IconButton(
-                          icon: const Icon(Icons.remove),
-                          onPressed: () {
-                            if (controller.person.value > 1) {
-                              controller.person.value--;
-                            }
-                          },
-                        ),
-                        Text(
-                          controller.person.toString(),
-                          style: const TextStyle(fontSize: 20.0),
-                        ),
-                        IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              controller.person.value++;
-                            }),
-                      ],
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.remove, color: Colors.redAccent),
+                      onPressed: () {
+                        if (controller.person.value > 1) {
+                          controller.person.value--;
+                        }
+                      },
+                    ),
+                    Obx(() => Text(
+                          '${controller.person.value}',
+                          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        )),
+                    IconButton(
+                      icon: const Icon(Icons.add, color: Colors.greenAccent),
+                      onPressed: () {
+                        controller.person.value++;
+                      },
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Palette.primary,
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.sp),
+                    ),
+                  ),
                   onPressed: () {
                     controller.checkDate();
                     if (formKey.currentState!.validate() && controller.isCheck.value == false) {
-                      controller.listDate = controller.generateDateList(controller.startDate.value, controller.returnDate.value);
+                      controller.updateDateList();
                       controller.selectedDate.value = controller.listDate.first;
                       Get.toNamed(Routes.pickPlace);
                       formKey.currentState!.save();
@@ -185,7 +202,7 @@ class CreateTripScreen extends GetView<CreateTripController> {
                   },
                   child: Text(
                     'Continue',
-                    style: AppFont.t.s(16).w700.black,
+                    style: AppFont.t.s(16).w700.white,
                   ),
                 ),
               ],

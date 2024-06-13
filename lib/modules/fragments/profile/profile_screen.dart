@@ -14,7 +14,7 @@ class ProfileScreen extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return ListView(padding: EdgeInsets.all(16.sp), children: [
-      _bannerProfile(),
+      _bannerProfile(context),
       const SizedBox(height: 22),
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -50,7 +50,7 @@ class ProfileScreen extends GetView<ProfileController> {
             const SizedBox(height: 25),
             _profileItem(asset: Assets.svg.iconAuthen, title: "Two-Factor Authentication", content: "Further secure your account for safety", onTap: controller.showNotifiCation),
             const SizedBox(height: 25),
-            _profileItem(asset: Assets.svg.iconLogout, title: "Log out", content: "Further secure your account for safety", onTap: controller.signOutUser),
+            _profileItem(asset: Assets.svg.iconLogout, title: "Log out", onTap: controller.signOutUser),
           ],
         ),
       ),
@@ -137,7 +137,7 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-  Widget _bannerProfile() {
+  Widget _bannerProfile(BuildContext context) {
     return Obx(() {
       return Container(
         padding: const EdgeInsets.all(18),
@@ -155,21 +155,57 @@ class ProfileScreen extends GetView<ProfileController> {
         ),
         child: Row(
           children: [
-            Container(
-              height: 53,
-              width: 53,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 2,
-                  color: Palette.white,
-                ),
-                image: controller.dashboardFragmentsController.currentUser.value?.avatar == null
-                    ? DecorationImage(image: Assets.images.man.provider(), fit: BoxFit.contain)
-                    : DecorationImage(
-                        image: NetworkImage(controller.dashboardFragmentsController.currentUser.value?.avatar ?? ''),
-                        fit: BoxFit.cover,
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => Dialog(
+                    insetPadding: const EdgeInsets.all(0),
+                    child: Container(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      width: Get.width,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                icon: const Icon(Icons.close, color: Colors.white),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                            InteractiveViewer(
+                              child: Image.network(
+                                controller.dashboardFragmentsController.currentUser.value?.avatar ?? '',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                height: 53,
+                width: 53,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 2,
+                    color: Palette.white,
+                  ),
+                  image: controller.dashboardFragmentsController.currentUser.value?.avatar == null
+                      ? DecorationImage(image: Assets.images.man.provider(), fit: BoxFit.contain)
+                      : DecorationImage(
+                          image: NetworkImage(controller.dashboardFragmentsController.currentUser.value?.avatar ?? ''),
+                          fit: BoxFit.cover,
+                        ),
+                ),
               ),
             ),
             const SizedBox(width: 13),

@@ -22,12 +22,17 @@ class AppUrl {
 
   static const String googleCallback = "$authGoogle/callback";
 
+  //trip
+  static const String trip = "$baseUrl/trip/";
+
   //home
   static const String banner = "$baseUrl/banner/";
 
   static const String category = "$baseUrl/category/";
 
   static const String place = "$baseUrl/place/";
+
+  static const String placeTrip = "$baseUrl/place/suggest/";
 
   static const String placeDetail = "$baseUrl/place/";
 

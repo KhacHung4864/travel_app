@@ -20,29 +20,24 @@ class PlaceItemPage extends GetView<PlaceItemController> {
         child: Scaffold(
           body: Stack(
             children: [
-              controller.isLoading.value
-                  ? SizedBox(
-                      width: double.maxFinite,
-                      height: 380.h,
-                    )
-                  : Positioned(
-                      left: 0.w,
-                      right: 0.w,
-                      child: FadeInImage(
-                        fit: BoxFit.cover,
-                        width: double.maxFinite,
-                        height: 380.h,
-                        placeholder: Assets.images.placeHolder.provider(),
-                        image: NetworkImage(controller.placeItem.images![1]),
-                        imageErrorBuilder: (context, error, stackTraceError) {
-                          return const Center(
-                            child: Icon(
-                              Icons.broken_image_outlined,
-                            ),
-                          );
-                        },
+              Positioned(
+                left: 0.w,
+                right: 0.w,
+                child: FadeInImage(
+                  fit: BoxFit.cover,
+                  width: double.maxFinite,
+                  height: 380.h,
+                  placeholder: Assets.images.placeHolder.provider(),
+                  image: controller.isLoading.value ? Assets.images.placeHolder.provider() : NetworkImage(controller.placeItem.images![1]),
+                  imageErrorBuilder: (context, error, stackTraceError) {
+                    return const Center(
+                      child: Icon(
+                        Icons.broken_image_outlined,
                       ),
-                    ),
+                    );
+                  },
+                ),
+              ),
               Positioned(
                 right: 10.w,
                 top: 10.h,

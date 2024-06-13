@@ -20,6 +20,7 @@ import 'package:travel_app/modules/fragments/search_place/search_item_screen.dar
 import 'package:travel_app/modules/fragments/trips/create_trip/create_trip_binding.dart';
 import 'package:travel_app/modules/fragments/trips/create_trip/create_trip_screen.dart';
 import 'package:travel_app/modules/fragments/trips/create_trip/pick_place_screen.dart';
+import 'package:travel_app/modules/fragments/trips/trip_binding.dart';
 import 'package:travel_app/modules/fragments/trips/trip_screen.dart';
 import 'package:travel_app/modules/map/map_binding.dart';
 import 'package:travel_app/modules/map/map_screen.dart';
@@ -149,6 +150,15 @@ class AppPages {
       name: Routes.addPlace,
       page: () => const AddPlaceScreen(),
       binding: AddPlaceBinding(),
+      transition: Transition.rightToLeft,
+      curve: Curves.fastOutSlowIn,
+      fullscreenDialog: true,
+    ),
+
+    GetPage(
+      name: Routes.trip,
+      page: () => const TripScreen(),
+      binding: TripBinding(),
       transition: Transition.rightToLeft,
       curve: Curves.fastOutSlowIn,
       fullscreenDialog: true,

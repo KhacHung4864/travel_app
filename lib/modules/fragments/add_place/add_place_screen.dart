@@ -12,53 +12,96 @@ class AddPlaceScreen extends GetView<AddPlaceController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.all(12.r),
-              child: showSearchBarWidget(),
+    return Obx(() => Scaffold(
+          appBar: AppBar(
+            title: Text(
+              'Add Place',
+              style: AppFont.t.s(18).w700.black,
             ),
-            controller.isLoading.value
-                ? const SizedBox.shrink()
-                : Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 14, 8, 8),
-                    child: Text(
-                      controller.listPlaceSearch.isEmpty ? "No item found" : "Search Results: ",
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w300,
+            centerTitle: true,
+            elevation: 5,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5.r),
+                child: showSearchBarWidget(),
+              ),
+              controller.isLoading.value
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 14, 8, 8),
+                      child: Text(
+                        controller.listPlaceTrip.isEmpty ? "No item found" : "Search Results: ",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
                       ),
                     ),
-                  ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await controller.searchPlaces(keyword: controller.searchController.text, listPlace: controller.listPlaceSearch, loading: false);
-                },
-                child: Obx(() {
-                  return ListView.builder(
-                    itemCount: controller.listPlaceSearch.length,
-                    itemBuilder: (context, index) {
-                      var item = controller.listPlaceSearch[index];
-                      return PopularWidget(
-                        onTap: () {
-                          Get.toNamed(Routes.placeDetail, arguments: [item.id]);
-                        },
-                        address: item.address ?? '',
-                        desc: item.description ?? '',
-                        price: item.price ?? 0,
-                        title: item.name ?? '',
-                        image: item.images?.first ?? '',
-                      );
-                    },
-                  );
-                }),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await controller.searchPlaces(keyword: controller.searchController.text, loading: false);
+                  },
+                  child: Obx(() {
+                    return ListView.builder(
+                      itemCount: controller.listPlaceTrip.length,
+                      itemBuilder: (context, index) {
+                        var item = controller.listPlaceTrip[index];
+                        return PopularWidget(
+                          onTap: () {
+                            Get.toNamed(Routes.placeDetail, arguments: [item.id]);
+                          },
+                          onTapPlacetrip: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Add Place'),
+                                  content: Text('Are you want add ${item.name} to your trip?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('Cancel'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text('Yes'),
+                                      onPressed: () {
+                                        controller.createTripController.placeTripsByDate[controller.createTripController.selectedDate]!.add(item);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          address: item.address ?? '',
+                          desc: item.description ?? '',
+                          price: item.price ?? 0,
+                          title: item.name ?? '',
+                          image: item.images?.first ?? '',
+                          isPlaceTrip: true,
+                          km: item.distance,
+                        );
+                      },
+                    );
+                  }),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ));
   }
 
@@ -67,12 +110,12 @@ class AddPlaceScreen extends GetView<AddPlaceController> {
       style: AppFont.t.black,
       controller: controller.searchController,
       onSubmitted: (value) {
-        controller.searchPlaces(keyword: controller.searchController.text, listPlace: controller.listPlaceSearch);
+        controller.searchPlaces(keyword: controller.searchController.text);
       },
       decoration: InputDecoration(
         prefixIcon: IconButton(
           onPressed: () {
-            controller.searchPlaces(keyword: controller.searchController.text, listPlace: controller.listPlaceSearch);
+            controller.searchPlaces(keyword: controller.searchController.text);
           },
           icon: const Icon(
             Icons.search,
@@ -125,7 +168,7 @@ class AddPlaceScreen extends GetView<AddPlaceController> {
   //       decoration: InputDecoration(
   //         prefixIcon: IconButton(
   //           onPressed: () {
-  //             controller.searchPlaces(keyword: controller.searchController.text, listPlace: controller.listPlaceSearch);
+  //             controller.searchPlaces(keyword: controller.searchController.text, listPlace: controller.listPlaceTrip);
   //           },
   //           icon: const Icon(
   //             Icons.search,

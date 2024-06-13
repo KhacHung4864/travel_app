@@ -27,4 +27,5 @@ class Routes {
   static const createTrip = '/createTrip';
   static const pickPlace = '/pickPlace';
   static const addPlace = '/addPlace';
+  static const trip = '/trip';
 }

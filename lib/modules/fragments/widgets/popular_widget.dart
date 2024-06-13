@@ -13,14 +13,19 @@ class PopularWidget extends StatelessWidget {
     required this.title,
     required this.image,
     this.onTap,
+    this.isPlaceTrip = false,
+    this.onTapPlacetrip,
+    this.km,
   });
-
+  final bool isPlaceTrip;
   final String title;
   final String address;
   final String desc;
   final int price;
+  final double? km;
   final String image;
   final Function()? onTap;
+  final Function()? onTapPlacetrip;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,29 @@ class PopularWidget extends StatelessWidget {
             // mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: AppFont.t.s(14).w700.textColor),
+              Row(
+                children: [
+                  Text(title, style: AppFont.t.s(14).w700.textColor),
+                  const Spacer(),
+                  isPlaceTrip
+                      ? InkWell(
+                          onTap: onTapPlacetrip,
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(100)),
+                            child: const Icon(
+                              Icons.add,
+                              color: Palette.white,
+                              size: 18,
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  const SizedBox(width: 10),
+                ],
+              ),
               SizedBox(
                 height: 6.h,
               ),
@@ -91,7 +118,15 @@ class PopularWidget extends StatelessWidget {
                   Text(
                     "/Person",
                     style: AppFont.t.s(10).w500.secondTextColor,
-                  )
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: 4.w,
+                  ),
+                  isPlaceTrip ? Text('${km?.toStringAsFixed(2)} Km', style: AppFont.t.s(10).w600.primary) : const SizedBox.shrink(),
+                  SizedBox(
+                    width: 15.w,
+                  ),
                 ],
               ),
             ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:travel_app/data/local/app_storage.dart';
 import 'package:travel_app/data/model/user_model.dart';
@@ -20,6 +21,7 @@ class DashboardFragmentsController extends GetxController {
   final Rx<User?> currentUser = User().obs;
   Rx<int> currentIndexs = 0.obs;
   Rx<int> backButtonPressCount = 0.obs;
+  Position? position;
 
   List<Widget> fragmentScreen = [
     const HomeScreen(),
@@ -53,6 +55,7 @@ class DashboardFragmentsController extends GetxController {
 
   @override
   void onInit() {
+    getCurrentLocation();
     getUserData();
     super.onInit();
   }
@@ -69,6 +72,33 @@ class DashboardFragmentsController extends GetxController {
     //     Get.lazyPut<ProfileController>(() => ProfileController());
     //   }
     // }
+  }
+
+  getCurrentLocation() async {
+    position = await checkPermisson();
+  }
+
+  Future<Position> checkPermisson() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
   void getUserData() async {

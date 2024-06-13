@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_app/configs/app_fonts.dart';
 import 'package:travel_app/configs/palette.dart';
+import 'package:travel_app/data/model/places/place_trip_model.dart';
 import 'package:travel_app/gen/assets.gen.dart';
 import 'package:travel_app/modules/fragments/trips/create_trip/create_trip_controller.dart';
 import 'package:travel_app/modules/map/google_map/open_google_map.dart';
@@ -15,104 +16,115 @@ class PickPlaceScreen extends GetView<CreateTripController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Edit trip plan',
-          style: AppFont.t.s(18).w700.black,
+          (controller.tripController.isEdit == true) ? 'Edit Trip' : 'Create Trip',
+          style: AppFont.t.s(20).w700.white,
         ),
         centerTitle: true,
-        elevation: 5,
+        elevation: 10,
+        backgroundColor: Palette.primary,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.done, color: Colors.black),
-            onPressed: () {
-              Navigator.of(context).pop();
+            icon: const Icon(Icons.done, color: Colors.white),
+            onPressed: () async {
+              await controller.createTrip();
+              controller.tripController.getListTrips();
+              Get.back();
+              Get.back();
             },
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                genderItem(),
-                const SizedBox(height: 5),
-                Expanded(
+      body: Obx(() {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  dayItem(),
+                  const SizedBox(height: 5),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                          offset: const Offset(0, 0),
+                        ),
+                      ]),
+                      child: controller.placeTripsByDate[controller.selectedDate.value]!.isEmpty
+                          ? const Center(child: Text("Add Place Now"))
+                          : SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: controller.placeTripsByDate[controller.selectedDate.value]!.map((placeTrip) {
+                                  return PickPlaceItem(
+                                    context: context,
+                                    selectedTime: controller.selectedTime,
+                                    selectedVehicle: controller.selectedVehicle,
+                                    controller: controller,
+                                    placeTrip: placeTrip,
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
                   child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: const Offset(0, 0),
-                      ),
-                    ]),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        PickPlaceItem(
-                          context: context,
-                          selectedTime: controller.selectedTime,
-                          selectedVehicle: controller.selectedVehicle,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  width: Get.width,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Palette.blueFF0D6EFD,
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      splashColor: Colors.white,
+                    width: Get.width,
+                    height: 56,
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      onTap: () {
-                        controller.getCurrentLocation();
-                        Get.toNamed(Routes.addPlace);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            'Add Place',
-                            style: AppFont.t.s(14).w600.white,
-                          ),
-                        ],
+                      color: Palette.primary,
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        splashColor: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () async {
+                          Get.toNamed(Routes.addPlace);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Add Place',
+                              style: AppFont.t.s(14).w600.white,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                )),
-          ],
-        ),
-      ),
+                  )),
+            ],
+          ),
+        );
+      }),
     );
   }
 
-  Column genderItem() {
+  Column dayItem() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -157,7 +169,7 @@ class PickPlaceScreen extends GetView<CreateTripController> {
                                     ),
                                     const Spacer(),
                                     Text(
-                                      '11 places',
+                                      '${controller.placeTripsByDate[e]!.length} places',
                                       style: AppFont.t.s(14).w700.copyWith(color: Colors.black54),
                                     ),
                                   ],
@@ -191,9 +203,13 @@ class PickPlaceItem extends StatelessWidget {
     required this.context,
     required this.selectedTime,
     required this.selectedVehicle,
+    required this.controller,
+    required this.placeTrip,
   });
 
   final BuildContext context;
+  final CreateTripController controller;
+  final PlaceTrip placeTrip;
   final Rx<TimeOfDay?> selectedTime;
   final Rx<int> selectedVehicle;
 
@@ -206,10 +222,13 @@ class PickPlaceItem extends StatelessWidget {
   Future<void> selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: selectedTime.value!,
+      initialTime: TimeOfDay(hour: placeTrip.startTime! ~/ 60, minute: placeTrip.startTime! % 60),
     );
     if (picked != null) {
       selectedTime.value = picked;
+      placeTrip.startTime = picked.hour * 60 + picked.minute;
+      print(selectedTime.value);
+      print(placeTrip.startTime! ~/ 60);
     }
   }
 
@@ -217,6 +236,7 @@ class PickPlaceItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: const EdgeInsets.only(top: 5),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
@@ -231,22 +251,27 @@ class PickPlaceItem extends StatelessWidget {
         children: [
           Column(
             children: [
-              FadeInImage(
-                fit: BoxFit.cover,
-                width: 95,
-                height: 100,
-                placeholder: Assets.images.placeHolder.provider(),
-                image: const NetworkImage('https://photo.znews.vn/w960/Uploaded/qhj_yvobvhfwbv/2018_07_18/Nguyen_Huy_Binh1.jpg'),
-                imageErrorBuilder: (context, error, stackTraceError) {
-                  return const Center(
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                    ),
-                  );
+              InkWell(
+                onTap: () {
+                  Get.toNamed(Routes.placeDetail, arguments: [placeTrip.id]);
                 },
+                child: FadeInImage(
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 120,
+                  placeholder: Assets.images.placeHolder.provider(),
+                  image: NetworkImage(placeTrip.images!.first),
+                  imageErrorBuilder: (context, error, stackTraceError) {
+                    return const Center(
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                      ),
+                    );
+                  },
+                ),
               ),
               Container(
-                width: 95,
+                width: 100,
                 color: Palette.blueFF0D6EFD,
                 child: InkWell(
                   onTap: () => selectTime(context),
@@ -255,10 +280,11 @@ class PickPlaceItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          formatTime(selectedTime.value!),
+                          formatTime(TimeOfDay(hour: placeTrip.startTime! ~/ 60, minute: placeTrip.startTime! % 60)),
                           style: AppFont.t.s(13).w700.white,
                         ),
                         const SizedBox(width: 5),
+                        if (selectedTime.value == const TimeOfDay(hour: 0, minute: 0)) const SizedBox.shrink(),
                         const Icon(
                           Icons.arrow_drop_down,
                           size: 25,
@@ -268,7 +294,7 @@ class PickPlaceItem extends StatelessWidget {
                     );
                   }),
                 ),
-              )
+              ),
             ],
           ),
           const SizedBox(width: 10),
@@ -277,8 +303,9 @@ class PickPlaceItem extends StatelessWidget {
             children: [
               const SizedBox(height: 12),
               Text(
-                'Ha Noi',
+                placeTrip.name ?? '',
                 style: AppFont.t.s(14).w600,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 15),
               Row(
@@ -294,50 +321,86 @@ class PickPlaceItem extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              InkWell(
-                onTap: () {
-                  showNoteDialog(context);
-                },
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.note_alt,
-                      color: Colors.blue,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Note',
-                      style: AppFont.t.s(12).w600.blueFF0D6EFD,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 5),
-              InkWell(
-                onTap: () {
-                  MapUtils.openMap(112, 20);
-                },
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.map,
-                      color: Colors.blue,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Map',
-                      style: AppFont.t.s(12).w600.blueFF0D6EFD,
-                    ),
-                  ],
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 12),
+                      InkWell(
+                        onTap: () {
+                          showNoteDialog(context);
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.note_alt,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Note',
+                              style: AppFont.t.s(12).w600.blueFF0D6EFD,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      InkWell(
+                        onTap: () {
+                          MapUtils.openMap(placeTrip.latitude!, placeTrip.longitude!);
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.map,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Map',
+                              style: AppFont.t.s(12).w600.blueFF0D6EFD,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 50),
+                  vehicle(),
+                ],
               ),
             ],
           ),
-          const SizedBox(width: 60),
-          vehicle(),
           const Spacer(),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Remove Place'),
+                    content: Text('Are you want Remove ${placeTrip.name} to your trip?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Yes'),
+                        onPressed: () {
+                          controller.placeTripsByDate[controller.selectedDate.value]!.remove(placeTrip);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
             child: const Icon(
               Icons.close,
               size: 25,
@@ -352,9 +415,9 @@ class PickPlaceItem extends StatelessWidget {
     return Obx(() {
       return Column(
         children: [
-          const SizedBox(height: 65),
+          if (selectedVehicle.value == 0) const SizedBox.shrink(),
           DropdownButton(
-            value: selectedVehicle.value,
+            value: placeTrip.vehicle,
             items: const [
               DropdownMenuItem(
                 value: 2,
@@ -387,6 +450,7 @@ class PickPlaceItem extends StatelessWidget {
             ],
             onChanged: (value) {
               selectedVehicle.value = value!;
+              placeTrip.vehicle = value;
             },
             icon: const Icon(
               Icons.arrow_drop_down,
@@ -396,7 +460,7 @@ class PickPlaceItem extends StatelessWidget {
             underline: const SizedBox.shrink(),
           ),
           Text(
-            '170m | 0p',
+            '${placeTrip.distance?.toStringAsFixed(2)}km',
             style: AppFont.t.s(12).w600.grey,
           ),
         ],
@@ -406,6 +470,7 @@ class PickPlaceItem extends StatelessWidget {
 
   Future<void> showNoteDialog(BuildContext context) async {
     TextEditingController textController = TextEditingController();
+    textController.text = placeTrip.note!;
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -425,6 +490,7 @@ class PickPlaceItem extends StatelessWidget {
             TextButton(
               child: const Text('Save'),
               onPressed: () {
+                placeTrip.note = textController.text;
                 Navigator.of(context).pop();
               },
             ),

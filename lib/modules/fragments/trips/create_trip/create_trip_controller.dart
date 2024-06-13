@@ -1,20 +1,31 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:travel_app/data/model/places_trip_model.dart';
+import 'package:travel_app/data/model/base_model.dart';
+import 'package:travel_app/data/model/list_trip_model.dart';
+import 'package:travel_app/data/model/places/create_trip_model.dart';
+import 'package:travel_app/data/model/places/place_trip_model.dart';
 import 'package:travel_app/data/network/api/home_api/home_api.dart';
+import 'package:travel_app/data/network/service/api_exception.dart';
+import 'package:travel_app/modules/fragments/dashboard_fragments_controller.dart';
+import 'package:travel_app/modules/fragments/trips/trip_controller.dart';
+import 'package:travel_app/utils/share_components/dialog/dialog.dart';
 
 class CreateTripController extends GetxController {
   CreateTripController();
   final HomeApi _homeApi = HomeApi();
-  String tripName = '';
+  final DashboardFragmentsController dashboardFragmentsController = Get.find();
+  final TripController tripController = Get.find();
+  TextEditingController tripName = TextEditingController();
 
   RxInt person = 1.obs;
   var startDate = 0.obs;
   var returnDate = 0.obs;
 
   RxList<PlaceTrip> listPlaceTrip = <PlaceTrip>[].obs;
+  Map<String, RxList<PlaceTrip>> placeTripsByDate = {};
 
   RxBool isCheck = false.obs;
   List<String> listDate = [];
@@ -23,11 +34,72 @@ class CreateTripController extends GetxController {
 
   Rx<int> selectedVehicle = 1.obs;
   Rx<TimeOfDay?> selectedTime = TimeOfDay.now().obs;
-  Position? position;
 
   @override
   void onInit() {
+    if (tripController.isEdit == true) {
+      final Trips trip = tripController.selectedTrip;
+      tripName.text = trip.name ?? '';
+      startDate.value = trip.fromDate! * 1000;
+      returnDate.value = trip.toDate! * 1000;
+      updateDateList();
+      person.value = trip.users ?? 1;
+      for (int i = 0; i < listDate.length; i++) {
+        placeTripsByDate[listDate[i]]?.value = trip.days![i].places!;
+      }
+    }
     super.onInit();
+  }
+
+  Future<void> createTrip() async {
+    final dataCreateTrip = CreateTripModel(
+            owner: dashboardFragmentsController.currentUser.value?.id,
+            name: tripName.text,
+            fromDate: startDate.value ~/ 1000,
+            toDate: returnDate.value ~/ 1000,
+            users: person.value,
+            days: listDate
+                .map((e) => Days(
+                    places: placeTripsByDate[e]
+                        ?.map((element) => CrPlaceTrip(
+                              id: element.id,
+                              note: element.note,
+                              visitTime: element.visitTime,
+                              startTime: element.startTime,
+                              vehicle: element.vehicle,
+                            ))
+                        .toList()))
+                .toList())
+        .toJson();
+    try {
+      final response =
+          tripController.isEdit == true ? await _homeApi.callUpdateTrip(data: dataCreateTrip, tripId: tripController.selectedTrip.id) : await _homeApi.callCreateTrip(data: dataCreateTrip);
+      BaseModel resData = BaseModel.fromJson(response.data);
+      if (response.statusCode == 200) {
+        if (resData.code == 0) {
+          Fluttertoast.showToast(msg: resData.message ?? '');
+        } else {
+          showError(resData.message);
+        }
+      } else {
+        showError(resData.message);
+      }
+    } on DioException catch (e) {
+      final ApiException apiException = ApiException.fromDioError(e);
+      throw apiException;
+    } finally {}
+  }
+
+  void updateDateList() {
+    if (startDate.value != 0 && returnDate.value != 0) {
+      listDate = generateDateList(startDate.value, returnDate.value);
+      // Tạo các danh sách địa điểm trống cho mỗi ngày
+      for (var date in listDate) {
+        if (!placeTripsByDate.containsKey(date)) {
+          placeTripsByDate[date] = <PlaceTrip>[].obs;
+        }
+      }
+    }
   }
 
   checkDate() {
@@ -35,24 +107,6 @@ class CreateTripController extends GetxController {
       isCheck.value = true;
     }
   }
-
-  // Future<void> get({Map<String, dynamic>? data, int? userId}) async {
-  //   try {
-  //     final response = await _homeApi.callPlaceTrip();
-  //     BaseModel resData = BaseModel.fromJson(response.data);
-  //     if (response.statusCode == 200) {
-  //       if (resData.code == 0) {
-  //       } else {
-  //         showError(resData.message);
-  //       }
-  //     } else {
-  //       showError(resData.message);
-  //     }
-  //   } on DioException catch (e) {
-  //     final ApiException apiException = ApiException.fromDioError(e);
-  //     throw apiException;
-  //   }
-  // }
 
   List<String> generateDateList(int startTimestamp, int endTimestamp) {
     // Chuyển đổi timestamp thành DateTime
@@ -70,33 +124,5 @@ class CreateTripController extends GetxController {
     }
 
     return dateList;
-  }
-
-  void getCurrentLocation() async {
-    position = await checkPermisson();
-    print(position?.latitude);
-  }
-
-  Future<Position> checkPermisson() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition();
   }
 }

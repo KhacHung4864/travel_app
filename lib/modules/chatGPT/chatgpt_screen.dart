@@ -91,7 +91,7 @@ class _ChatGPTScreenState extends State<ChatGPTScreen> {
     }).toList();
     final request = ChatCompleteText(
       messages: messagesHistory,
-      maxToken: 400,
+      maxToken: 450,
       model: GptTurbo0301ChatModel(),
     );
     try {
